@@ -80,8 +80,22 @@ function normalizeTrack(track) {
   return track.replace(/\s*Track$/i, "").trim();
 }
 
+const SECRET_PATTERNS = [
+  /\bsk-(?:proj|live|ant|test|svcacct)[-_A-Za-z0-9]{20,}\b/gi,
+  /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:[0-9a-f]{16,}\b/gi,
+  /\b(?:Fal|OpenAI|Anthropic|Producton)\s*(?:API\s*)?Key[:\s]+\S+/gi,
+];
+
+function redactSecrets(value) {
+  let result = String(value || "");
+  for (const pattern of SECRET_PATTERNS) {
+    result = result.replace(pattern, "");
+  }
+  return result;
+}
+
 function cleanText(value) {
-  return String(value || "")
+  return redactSecrets(value)
     .replace(/\s+/g, " ")
     .trim();
 }
