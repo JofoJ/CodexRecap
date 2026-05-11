@@ -72,7 +72,7 @@ const sponsors: Sponsor[] = [
     logo: "/sponsors/antler.svg",
     description:
       "Antler is a pre-seed fund, the first believer at inception stage, investing $600K as your first institutional check.",
-    cta: { label: "Apply to a residency", href: "https://www.antler.co/apply" },
+    cta: { label: "Apply to a residency", href: "https://to.antler.co/AITX" },
   },
   {
     name: "Miro",
