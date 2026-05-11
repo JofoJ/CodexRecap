@@ -57,6 +57,57 @@ const winningBuilds = [
     Boolean(winner),
   );
 
+type Sponsor = {
+  name: string;
+  logo: string;
+  logoTheme?: "dark";
+  description: string;
+  cta?: { label: string; href: string };
+};
+
+const sponsors: Sponsor[] = [
+  {
+    name: "Antler",
+    logo: "/sponsors/antler.svg",
+    description:
+      "Antler is a pre-seed fund, the first believer at inception stage, investing $600K as your first institutional check.",
+    cta: { label: "Apply to a residency", href: "https://www.antler.co/apply" },
+  },
+  {
+    name: "Miro",
+    logo: "/sponsors/miro.svg",
+    logoTheme: "dark",
+    description:
+      "The AI-powered visual workspace for innovation. Teams use Miro's intelligent canvas, AI workflows, and deep integrations like Miro MCP with Codex, Claude, and other AI tooling to collaborate across the full product lifecycle.",
+    cta: { label: "miro.com", href: "https://miro.com" },
+  },
+  {
+    name: "AutoHDR",
+    logo: "/sponsors/autohdr.svg",
+    description:
+      "AutoHDR edits 1 in 10 U.S. real estate listings using AI. They scaled from $0 to $8M ARR in under a year and are hiring builders with creativity, grit, and a willingness to ship.",
+    cta: { label: "autohdr.com", href: "https://www.autohdr.com/" },
+  },
+  {
+    name: "Atlassian for Startups",
+    logo: "/sponsors/atlassian-for-startups.svg",
+    logoTheme: "dark",
+    description:
+      "Atlassian's mission is to unleash the potential of every team. Supercharged by AI, Atlassian for Startups gives founders collaboration tools to plan, track, and ship — from MVP to IPO.",
+    cta: {
+      label: "Atlassian for Startups",
+      href: "https://www.atlassian.com/software/startups",
+    },
+  },
+  {
+    name: "BrainForge",
+    logo: "/sponsors/brainforge.svg",
+    description:
+      "Brainforge is an embedded data and AI team that builds governed company brain systems — turning behavior, documents, and stack sprawl into assistants, automations, and agents teams actually use.",
+    cta: { label: "Learn more", href: "https://brainforge.ai" },
+  },
+];
+
 function shortDescription(value: string, maxLength = 245) {
   if (value.length <= maxLength) return value;
   return `${value.slice(0, maxLength).trim()}...`;
@@ -166,6 +217,38 @@ function App() {
               <strong>56,415</strong>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="sponsors" id="sponsors" aria-labelledby="sponsors-heading">
+        <div className="section-heading">
+          <p className="eyebrow">Sponsors</p>
+          <h2 id="sponsors-heading">Made possible by</h2>
+        </div>
+        <div className="sponsor-grid">
+          {sponsors.map((sponsor) => (
+            <article
+              className="sponsor-card"
+              key={sponsor.name}
+              data-theme={sponsor.logoTheme}
+            >
+              <div className="sponsor-logo">
+                <img alt={`${sponsor.name} logo`} src={sponsor.logo} />
+              </div>
+              <p>{sponsor.description}</p>
+              {sponsor.cta ? (
+                <a
+                  className="sponsor-link"
+                  href={sponsor.cta.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {sponsor.cta.label}
+                  <ArrowUpRight size={14} />
+                </a>
+              ) : null}
+            </article>
+          ))}
         </div>
       </section>
 
