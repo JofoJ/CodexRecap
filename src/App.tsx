@@ -1,0 +1,454 @@
+import {
+  ArrowUpRight,
+  ChevronDown,
+  ChevronUp,
+  Github,
+  Play,
+  Search,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import submissions from "./data/submissions.json";
+
+type Submission = {
+  id: string;
+  name: string;
+  description: string;
+  demoVideo: string;
+  demoEmbedUrl: string;
+  demoProvider: string;
+  demoThumbnailUrl: string;
+  tracks: string[];
+  attendees: Array<{
+    name: string;
+    linkedin: string;
+  }>;
+  githubRepo: string;
+  bounties: string[];
+  showcaseWorthy: string;
+};
+
+const data = submissions as Submission[];
+const trackFilters = ["Agents", "AutoHDR", "Open Data"];
+const bountyFilters = Array.from(
+  new Set(data.flatMap((submission) => submission.bounties)),
+).sort((a, b) => a.localeCompare(b));
+const filters = ["All", ...trackFilters, "Bounties", ...bountyFilters];
+const winningBuilds = [
+  {
+    track: "Agents Track",
+    name: "Manifold - Natural Language Space Mission Designer",
+  },
+  {
+    track: "AutoHDR Photo-to-Video Track",
+    name: "OBJECT ORIENTED VIDEOGRAPHY",
+  },
+  {
+    track: "BrainForge & Vicinity Texas Open Data Track",
+    name: "TxMoney - Follow the Money",
+  },
+]
+  .map((winner) => {
+    const submission = data.find((entry) => entry.name === winner.name);
+    return submission ? { ...winner, submission } : null;
+  })
+  .filter((winner): winner is { track: string; name: string; submission: Submission } =>
+    Boolean(winner),
+  );
+
+function shortDescription(value: string, maxLength = 245) {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength).trim()}...`;
+}
+
+function scoreForFeature(submission: Submission) {
+  return (
+    submission.bounties.length * 18 +
+    submission.tracks.length * 8 +
+    (submission.githubRepo ? 4 : 0) +
+    (submission.demoVideo ? 4 : 0)
+  );
+}
+
+function trackTone(track: string) {
+  if (track === "Agents") return "tone-blue";
+  if (track === "AutoHDR") return "tone-amber";
+  if (track === "Open Data") return "tone-green";
+  return "tone-neutral";
+}
+
+function matchesFilter(submission: Submission, filter: string) {
+  if (filter === "All") return true;
+  if (filter === "Bounties") return submission.bounties.length > 0;
+  if (bountyFilters.includes(filter)) return submission.bounties.includes(filter);
+  return submission.tracks.includes(filter);
+}
+
+function App() {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [query, setQuery] = useState("");
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [activeVideos, setActiveVideos] = useState<Set<string>>(() => new Set());
+  const [readyVideos, setReadyVideos] = useState<Set<string>>(() => new Set());
+  const [fallbackVideos, setFallbackVideos] = useState<Set<string>>(() => new Set());
+  const fallbackTimers = useRef<Map<string, number>>(new Map());
+
+  const filtered = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return data
+      .filter((submission) => matchesFilter(submission, activeFilter))
+      .filter((submission) => {
+        if (!normalizedQuery) return true;
+        return [
+          submission.name,
+          submission.description,
+          submission.attendees.map((attendee) => attendee.name).join(" "),
+          submission.tracks.join(" "),
+          submission.bounties.join(" "),
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      })
+      .sort((a, b) => scoreForFeature(b) - scoreForFeature(a));
+  }, [activeFilter, query]);
+
+  const bountyBuilds = data.filter((submission) => submission.bounties.length > 0).length;
+  return (
+    <main>
+      <section className="hero">
+        <nav className="topbar" aria-label="Site">
+          <div className="brand">
+            <span className="brand-mark">AI</span>
+            <span>AITX &lt;&gt; Codex</span>
+          </div>
+          <a className="nav-link" href="#gallery">
+            View builds
+            <ArrowUpRight size={16} />
+          </a>
+        </nav>
+
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <p className="eyebrow">Community Hackathon Showcase</p>
+            <h1>Austin builders spent 48 hours shipping real projects with Codex.</h1>
+            <p className="hero-lede">
+              AITX Community teamed up with Codex for a full weekend hackathon at
+              Antler VC Austin, bringing engineers, founders, designers, students, and AI
+              explorers together for tracks, prizes, mentors, overnight building, and a
+              Sunday Hack Fair demo showcase.
+            </p>
+            <div className="hero-actions">
+              <a className="primary-action" href="#gallery">
+                Explore the gallery
+                <Sparkles size={18} />
+              </a>
+              <a className="secondary-action" href="#featured">
+                See winning builds
+              </a>
+            </div>
+          </div>
+
+          <aside className="hero-panel" aria-label="Hackathon statistics">
+            <div>
+              <span className="panel-label">Submissions</span>
+              <strong>{data.length}</strong>
+            </div>
+            <div>
+              <span className="panel-label">Total Tokens Used</span>
+              <strong>4.66B</strong>
+            </div>
+            <div>
+              <span className="panel-label">Total Model Requests</span>
+              <strong>56,415</strong>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="featured" id="featured" aria-labelledby="featured-heading">
+        <div className="section-heading">
+          <p className="eyebrow">Winning Builds</p>
+          <h2 id="featured-heading">Track winners from the Hack Fair</h2>
+        </div>
+        <div className="featured-grid">
+          {winningBuilds.map((winner, index) => (
+            <a
+              className="featured-card"
+              href={`#submission-${winner.submission.id}`}
+              key={winner.submission.id}
+            >
+              <span className="rank">0{index + 1}</span>
+              <div>
+                <p className="winner-track">{winner.track}</p>
+                <h3>{winner.submission.name}</h3>
+                <p>{shortDescription(winner.submission.description, 150)}</p>
+              </div>
+              <div className="metric-row">
+                {winner.submission.tracks.slice(0, 2).map((track) => (
+                  <span key={track}>{track}</span>
+                ))}
+                <span>Jump to build</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section className="gallery-section" id="gallery" aria-labelledby="gallery-heading">
+        <div className="gallery-header">
+          <div>
+            <p className="eyebrow">Build gallery</p>
+            <h2 id="gallery-heading">Search every project</h2>
+          </div>
+          <div className="search-wrap">
+            <Search size={18} />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search projects, teams, tracks, bounties..."
+              aria-label="Search submissions"
+            />
+          </div>
+        </div>
+
+        <div className="filter-row" aria-label="Submission filters">
+          {filters.map((filter) => (
+            <button
+              className={activeFilter === filter ? "filter active" : "filter"}
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              type="button"
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        <div className="result-count">
+          Showing {filtered.length} of {data.length} builds
+          <span>{bountyBuilds} bounty-tagged submissions</span>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="empty-state">
+            <h3>No matching builds</h3>
+            <p>Try a different project name, team member, track, or bounty.</p>
+          </div>
+        ) : null}
+
+        <div className="card-grid">
+          {filtered.map((submission) => (
+            <article
+              className="submission-card"
+              id={`submission-${submission.id}`}
+              key={submission.id}
+            >
+              {(() => {
+                const isExpanded = expandedDescriptions.has(submission.id);
+                const canExpand = submission.description.length > 245;
+                const description = isExpanded
+                  ? submission.description
+                  : shortDescription(submission.description);
+
+                return (
+                  <>
+              <div className="card-top">
+                <div className="badge-row">
+                  {submission.tracks.map((track) => (
+                    <span className={`badge ${trackTone(track)}`} key={track}>
+                      {track}
+                    </span>
+                  ))}
+                  {submission.bounties.length > 0 ? (
+                    <span className="badge tone-prize">
+                      <Trophy size={13} />
+                      Bounty
+                    </span>
+                  ) : null}
+                </div>
+                <h3>{submission.name}</h3>
+                <p>{description}</p>
+                {canExpand ? (
+                  <button
+                    className="description-toggle"
+                    onClick={() => {
+                      setExpandedDescriptions((current) => {
+                        const next = new Set(current);
+                        if (next.has(submission.id)) {
+                          next.delete(submission.id);
+                        } else {
+                          next.add(submission.id);
+                        }
+                        return next;
+                      });
+                    }}
+                    type="button"
+                  >
+                    {isExpanded ? "Show less" : "Show full description"}
+                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+                ) : null}
+              </div>
+
+              {submission.demoEmbedUrl ? (
+                <div className="video-frame">
+                  {activeVideos.has(submission.id) ? (
+                    <>
+                      <iframe
+                        src={submission.demoEmbedUrl}
+                        title={`${submission.name} demo video`}
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                        onLoad={() => {
+                          const pending = fallbackTimers.current.get(submission.id);
+                          if (pending !== undefined) {
+                            window.clearTimeout(pending);
+                            fallbackTimers.current.delete(submission.id);
+                          }
+                          setReadyVideos((current) =>
+                            new Set(current).add(submission.id),
+                          );
+                        }}
+                      />
+                      {!readyVideos.has(submission.id) &&
+                      !fallbackVideos.has(submission.id) ? (
+                        <div className="video-loading-overlay">
+                          {submission.demoThumbnailUrl ? (
+                            <img alt="" src={submission.demoThumbnailUrl} />
+                          ) : null}
+                          <span className="play-badge">
+                            <Play size={22} fill="currentColor" />
+                          </span>
+                          <span className="video-provider">
+                            Loading embedded player...
+                          </span>
+                        </div>
+                      ) : null}
+                      {fallbackVideos.has(submission.id) ? (
+                        <div className="video-fallback-overlay">
+                          {submission.demoThumbnailUrl ? (
+                            <img alt="" src={submission.demoThumbnailUrl} />
+                          ) : null}
+                          <a
+                            href={submission.demoVideo}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <Play size={18} fill="currentColor" />
+                            Open demo
+                          </a>
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    <button
+                      className="video-poster"
+                      onClick={() => {
+                        setReadyVideos((current) => {
+                          const next = new Set(current);
+                          next.delete(submission.id);
+                          return next;
+                        });
+                        setFallbackVideos((current) => {
+                          const next = new Set(current);
+                          next.delete(submission.id);
+                          return next;
+                        });
+                        setActiveVideos((current) => new Set(current).add(submission.id));
+                        const existing = fallbackTimers.current.get(submission.id);
+                        if (existing !== undefined) {
+                          window.clearTimeout(existing);
+                        }
+                        const timerId = window.setTimeout(() => {
+                          fallbackTimers.current.delete(submission.id);
+                          setReadyVideos((readyCurrent) => {
+                            if (readyCurrent.has(submission.id)) return readyCurrent;
+                            setFallbackVideos((current) =>
+                              new Set(current).add(submission.id),
+                            );
+                            return readyCurrent;
+                          });
+                        }, 12000);
+                        fallbackTimers.current.set(submission.id, timerId);
+                      }}
+                      type="button"
+                    >
+                      {submission.demoThumbnailUrl ? (
+                        <img
+                          alt=""
+                          loading="lazy"
+                          src={submission.demoThumbnailUrl}
+                        />
+                      ) : null}
+                      <span className="play-badge">
+                        <Play size={22} fill="currentColor" />
+                      </span>
+                      <span className="video-provider">
+                        Play {submission.demoProvider || "demo"}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              ) : null}
+
+              {submission.attendees.length > 0 ? (
+                <div className="meta-line">
+                  <span>Team</span>
+                  <div className="attendee-list">
+                    {submission.attendees.map((attendee) =>
+                      attendee.linkedin ? (
+                        <a
+                          href={attendee.linkedin}
+                          key={`${submission.id}-${attendee.name}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {attendee.name}
+                        </a>
+                      ) : (
+                        <span key={`${submission.id}-${attendee.name}`}>
+                          {attendee.name}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
+              ) : null}
+
+              {submission.bounties.length > 0 ? (
+                <p className="meta-line">
+                  <span>Bounties</span>
+                  {submission.bounties.join(", ")}
+                </p>
+              ) : null}
+
+              <div className="card-actions">
+                {submission.demoVideo ? (
+                  <a href={submission.demoVideo} target="_blank" rel="noreferrer">
+                    <Play size={16} />
+                    Demo
+                  </a>
+                ) : null}
+                {submission.githubRepo ? (
+                  <a href={submission.githubRepo} target="_blank" rel="noreferrer">
+                    <Github size={16} />
+                  Repo
+                </a>
+              ) : null}
+              </div>
+                  </>
+                );
+              })()}
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export default App;
