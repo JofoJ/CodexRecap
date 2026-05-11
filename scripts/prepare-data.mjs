@@ -1,10 +1,19 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 const csvPath = process.env.SUBMISSIONS_CSV
   ? resolve(process.env.SUBMISSIONS_CSV)
   : "/Users/jakeoshea/Downloads/Submissions-Codex Hackathon.csv";
 const outputPath = resolve("src/data/submissions.json");
+
+try {
+  await access(csvPath);
+} catch {
+  console.log(
+    `prepare-data: CSV not found at ${csvPath}, using existing ${outputPath}`,
+  );
+  process.exit(0);
+}
 const submissionOverrides = new Map([
   [
     "TEAM NAME = OBJECTS! - PROJECT = OBJECT ORIENTED VIDEOGRAPHY",
