@@ -174,8 +174,7 @@ function App() {
       <section className="hero">
         <nav className="topbar" aria-label="Site">
           <div className="brand">
-            <span className="brand-mark">AI</span>
-            <span>AITX &lt;&gt; Codex</span>
+            <span>AITX&lt;&gt;Codex Community Hackathon Showcase</span>
           </div>
           <a className="nav-link" href="#gallery">
             View builds
@@ -189,9 +188,8 @@ function App() {
             <h1>Austin builders spent 48 hours shipping real projects with Codex.</h1>
             <p className="hero-lede">
               AITX Community teamed up with Codex for a full weekend hackathon at
-              Antler VC Austin, bringing engineers, founders, designers, students, and AI
-              explorers together for tracks, prizes, mentors, overnight building, and a
-              Sunday Hack Fair demo showcase.
+              Antler VC, bringing engineers, founders, researchers, and AI explorers
+              together to build exciting technology with Codex.
             </p>
             <div className="hero-actions">
               <a className="primary-action" href="#gallery">
