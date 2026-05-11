@@ -239,7 +239,7 @@ function App() {
               <p>{sponsor.description}</p>
               {sponsor.cta ? (
                 <a
-                  className="sponsor-link"
+                  className="partner-cta"
                   href={sponsor.cta.href}
                   target="_blank"
                   rel="noreferrer"

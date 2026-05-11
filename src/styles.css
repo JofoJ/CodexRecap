@@ -282,7 +282,7 @@ h2 {
   }
 }
 
-.sponsor-link {
+.partner-cta {
   display: inline-flex;
   align-self: flex-start;
   align-items: center;
@@ -299,7 +299,7 @@ h2 {
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.sponsor-link:hover {
+.partner-cta:hover {
   background: rgba(242, 142, 43, 0.22);
   border-color: rgba(242, 142, 43, 0.75);
   color: #ffd6a8;
