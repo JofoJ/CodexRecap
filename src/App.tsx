@@ -30,6 +30,7 @@ type Submission = {
 };
 
 const data = submissions as Submission[];
+const SHOW_GITHUB_LINKS = false;
 const trackFilters = ["Agents", "AutoHDR", "Open Data"];
 const bountyFilters = Array.from(
   new Set(data.flatMap((submission) => submission.bounties)),
@@ -516,7 +517,7 @@ function App() {
                     Demo
                   </a>
                 ) : null}
-                {submission.githubRepo ? (
+                {SHOW_GITHUB_LINKS && submission.githubRepo ? (
                   <a href={submission.githubRepo} target="_blank" rel="noreferrer">
                     <Github size={16} />
                   Repo
