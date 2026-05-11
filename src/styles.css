@@ -222,15 +222,15 @@ h2 {
 
 .sponsor-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .sponsor-card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 22px;
+  gap: 14px;
+  padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 12px;
   background: rgba(15, 19, 28, 0.76);
@@ -241,8 +241,8 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 72px;
-  padding: 14px 18px;
+  height: 76px;
+  padding: 12px 14px;
   border-radius: 8px;
   background: #fffaf1;
 }
@@ -254,14 +254,32 @@ h2 {
 }
 
 .sponsor-card[data-theme="dark"] .sponsor-logo {
-  background: rgba(255, 255, 255, 0.06);
+  background: #10131a;
 }
 
 .sponsor-card p {
   margin: 0;
   color: #b9c5d6;
-  font-size: 14.5px;
+  font-size: 13.5px;
   line-height: 1.5;
+}
+
+@media (max-width: 1080px) {
+  .sponsor-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .sponsor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .sponsor-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sponsor-link {

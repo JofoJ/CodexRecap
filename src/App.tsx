@@ -91,7 +91,6 @@ const sponsors: Sponsor[] = [
   {
     name: "Atlassian for Startups",
     logo: "/sponsors/atlassian-for-startups.svg",
-    logoTheme: "dark",
     description:
       "Atlassian's mission is to unleash the potential of every team. Supercharged by AI, Atlassian for Startups gives founders collaboration tools to plan, track, and ship — from MVP to IPO.",
     cta: {

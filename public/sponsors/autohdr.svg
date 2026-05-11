@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60"><text x="120" y="38" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800" fill="#10131a" letter-spacing="0.5">AutoHDR</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 200" fill="none">
+  <g>
+    <path d="M14 36 L94 24 L116 152 L36 164 Z" fill="#CFCFCF"/>
+    <path d="M50 26 L130 14 L154 156 L74 168 Z" fill="#7E7E7E"/>
+    <path d="M90 18 L170 6 L196 160 L116 172 Z" fill="#1A1A1A"/>
+  </g>
+  <text x="230" y="130" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="118" fill="#0B0B0B" letter-spacing="-3">AutoHDR</text>
+</svg>

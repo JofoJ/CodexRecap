@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60"><rect width="240" height="60" rx="6" fill="#f04438"/><text x="120" y="38" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800" fill="#ffffff" letter-spacing="2">ANTLER</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 130" fill="none">
+  <rect width="130" height="130" fill="#E84A47"/>
+  <path d="M65 28 L36 102 L52 102 L65 67 L78 102 L94 102 Z" fill="#FFFFFF"/>
+  <g fill="#E84A47" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="98" letter-spacing="-3">
+    <text x="148" y="100">NTLER</text>
+  </g>
+</svg>
