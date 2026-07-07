@@ -7,8 +7,9 @@ import {
   Search,
   Sparkles,
   Trophy,
+  X,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import submissions from "./data/submissions.json";
 
 type Submission = {
@@ -137,6 +138,61 @@ function matchesFilter(submission: Submission, filter: string) {
   return submission.tracks.includes(filter);
 }
 
+function HeroVideo() {
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [inView, setInView] = useState(true);
+  const [engaged, setEngaged] = useState(false);
+  const [dockClosed, setDockClosed] = useState(false);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+        if (entry.isIntersecting) setDockClosed(false);
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, []);
+
+  const floating = !inView && engaged && !dockClosed;
+
+  return (
+    <div className="hero-video" ref={wrapperRef}>
+      <div className={floating ? "video-shell floating" : "video-shell"}>
+        <video
+          ref={videoRef}
+          controls
+          playsInline
+          preload="metadata"
+          poster="/media/hackathon-hype-poster.jpg"
+          onPlay={() => setEngaged(true)}
+          onEnded={() => setEngaged(false)}
+        >
+          <source src="/media/hackathon-hype.mp4" type="video/mp4" />
+        </video>
+        {floating ? (
+          <button
+            aria-label="Close mini player"
+            className="video-dock-close"
+            onClick={() => {
+              videoRef.current?.pause();
+              setDockClosed(true);
+            }}
+            type="button"
+          >
+            <X size={16} />
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [query, setQuery] = useState("");
@@ -217,6 +273,8 @@ function App() {
             </div>
           </aside>
         </div>
+
+        <HeroVideo />
       </section>
 
       <section className="sponsors" id="sponsors" aria-labelledby="sponsors-heading">

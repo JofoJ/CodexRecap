@@ -206,6 +206,75 @@ h2 {
   letter-spacing: -0.01em;
 }
 
+.hero-video {
+  width: min(1180px, 100%);
+  margin: clamp(44px, 8vh, 76px) auto 0;
+  aspect-ratio: 16 / 9;
+}
+
+.video-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: #05070b;
+  box-shadow: 0 30px 110px rgba(0, 0, 0, 0.45);
+}
+
+.video-shell video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-shell.floating {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  width: min(400px, calc(100vw - 40px));
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  animation: dock-in 220ms ease;
+}
+
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.video-dock-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(9, 11, 16, 0.78);
+  color: #f7f8fb;
+  cursor: pointer;
+}
+
+.video-dock-close:hover {
+  background: rgba(9, 11, 16, 0.95);
+}
+
 .sponsors {
   width: min(1180px, 100%);
   margin: 0 auto;
